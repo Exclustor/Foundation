@@ -142,6 +142,7 @@ class MojangToMapping {
 			this.put("net.minecraft.world.entity.Entity#getEncodeId()", "bw");
 			this.put("net.minecraft.world.level.block.entity.BlockEntity#saveWithId()", "p");
 			this.put("net.minecraft.world.level.block.entity.BlockEntity#getBlockState()", "r");
+			this.put("net.minecraft.world.item.ItemStack#CODEC", "a");
 		}
 
 	};
@@ -166,6 +167,7 @@ class MojangToMapping {
 			this.put("net.minecraft.util.datafix.DataFixers#getDataFixer()", "a");
 			this.put("net.minecraft.util.datafix.fixes.References#ITEM_STACK", "t");
 			this.put("net.minecraft.nbt.NbtOps#INSTANCE", "a");
+			this.put("net.minecraft.world.item.ItemStack#CODEC", "b");
 		}
 
 	};
@@ -190,21 +192,100 @@ class MojangToMapping {
 			this.put("net.minecraft.server.MinecraftServer#registryAccess()", "ba");
 			this.put("net.minecraft.world.entity.Entity#getEncodeId()", "bK");
 			this.put("net.minecraft.world.level.block.entity.BlockEntity#getBlockState()", "m");
+			this.put("net.minecraft.world.item.ItemStack#CODEC", "a");
 		}
 
 	};
 
 	@SuppressWarnings("serial")
 	private static Map<String, String> MC1_21R3 = new HashMap<String, String>() {
-		{
-			putAll(MC1_21R2);
 
-			put("net.minecraft.world.item.component.CustomData#copyTag()", "d");
+		{
+			this.putAll(MC1_21R2);
+
+			this.put("net.minecraft.world.item.component.CustomData#copyTag()", "d");
 		}
+
+	};
+
+	@SuppressWarnings("serial")
+	private static Map<String, String> MC1_21R4 = new HashMap<String, String>() {
+
+		{
+			this.putAll(MC1_21R3);
+
+			this.put("net.minecraft.nbt.CompoundTag#getShort(java.lang.String)", "d");
+			this.put("net.minecraft.nbt.CompoundTag#getString(java.lang.String)", "i");
+			this.put("net.minecraft.nbt.CompoundTag#contains(java.lang.String)", "b");
+			this.put("net.minecraft.nbt.CompoundTag#getDouble(java.lang.String)", "h");
+			this.put("net.minecraft.nbt.CompoundTag#getByteArray(java.lang.String)", "j");
+			this.put("net.minecraft.nbt.CompoundTag#getFloat(java.lang.String)", "g");
+			this.put("net.minecraft.nbt.CompoundTag#get(java.lang.String)", "a");
+			this.put("net.minecraft.nbt.CompoundTag#getLong(java.lang.String)", "f");
+			this.put("net.minecraft.nbt.CompoundTag#getLongArray(java.lang.String)", "l");
+			this.put("net.minecraft.nbt.CompoundTag#getInt(java.lang.String)", "e");
+			this.put("net.minecraft.nbt.CompoundTag#getIntArray(java.lang.String)", "k");
+			this.put("net.minecraft.nbt.CompoundTag#getCompound(java.lang.String)", "m");
+			this.put("net.minecraft.nbt.CompoundTag#getByte(java.lang.String)", "c");
+			this.put("net.minecraft.nbt.ListTag#getString(int)", "m");
+			this.put("net.minecraft.world.entity.Entity#saveWithoutId(net.minecraft.nbt.CompoundTag)", "h");
+			this.put("net.minecraft.world.entity.Entity#getEncodeId()", "bI");
+			this.put("net.minecraft.world.entity.Entity#load(net.minecraft.nbt.CompoundTag)", "i");
+			this.put("net.minecraft.nbt.Tag#getType()", "c");
+			this.put("net.minecraft.nbt.TagType#getName()", "a");
+			this.put("net.minecraft.nbt.CompoundTag#getList(java.lang.String)", "o");
+			this.put("net.minecraft.world.item.ItemStack#parse(net.minecraft.core.HolderLookup$Provider,net.minecraft.nbt.Tag)", "a");
+		}
+
+	};
+
+	@SuppressWarnings("serial")
+	private static Map<String, String> MC1_21R5 = new HashMap<String, String>() {
+
+		{
+			this.putAll(MC1_21R3);
+			this.put("net.minecraft.core.HolderLookup$Provider#createSerializationContext(com.mojang.serialization.DynamicOps)", "a");
+			this.put("net.minecraft.nbt.CompoundTag#getByteArray(java.lang.String)", "j");
+			this.put("net.minecraft.nbt.CompoundTag#getDouble(java.lang.String)", "h");
+			this.put("net.minecraft.nbt.CompoundTag#keySet()", "e");
+			this.put("net.minecraft.nbt.CompoundTag#getLong(java.lang.String)", "f");
+			this.put("net.minecraft.nbt.CompoundTag#getList(java.lang.String)", "o");
+			this.put("net.minecraft.nbt.CompoundTag#getInt(java.lang.String)", "e");
+			this.put("net.minecraft.nbt.CompoundTag#getCompound(java.lang.String)", "m");
+			this.put("net.minecraft.nbt.CompoundTag#getByte(java.lang.String)", "c");
+			this.put("net.minecraft.nbt.CompoundTag#getShort(java.lang.String)", "d");
+			this.put("net.minecraft.nbt.CompoundTag#getIntArray(java.lang.String)", "k");
+			this.put("net.minecraft.nbt.CompoundTag#get(java.lang.String)", "a");
+			this.put("net.minecraft.nbt.CompoundTag#getString(java.lang.String)", "i");
+			this.put("net.minecraft.nbt.CompoundTag#getFloat(java.lang.String)", "g");
+			this.put("net.minecraft.nbt.CompoundTag#getLongArray(java.lang.String)", "l");
+			this.put("net.minecraft.nbt.CompoundTag#contains(java.lang.String)", "b");
+			this.put("net.minecraft.nbt.ListTag#getString(int)", "m");
+			this.put("net.minecraft.nbt.Tag#getType()", "c");
+			this.put("net.minecraft.nbt.TagParser#parseCompoundFully(java.lang.String)", "a");
+			this.put("net.minecraft.nbt.TagType#getName()", "a");
+			this.put("net.minecraft.world.entity.Entity#load(net.minecraft.world.level.storage.ValueInput)", "e");
+			this.put("net.minecraft.world.entity.Entity#getEncodeId()", "bN");
+			this.put("net.minecraft.world.entity.Entity#saveWithoutId(net.minecraft.world.level.storage.ValueOutput)", "d");
+			this.put("net.minecraft.world.level.block.entity.BlockEntity#saveWithId(net.minecraft.world.level.storage.ValueOutput)", "d");
+			this.put("net.minecraft.world.level.block.entity.BlockEntity#loadWithComponents(net.minecraft.world.level.storage.ValueInput)", "b");
+			this.put("net.minecraft.world.level.storage.TagValueInput#create(net.minecraft.util.ProblemReporter,net.minecraft.core.HolderLookup$Provider,net.minecraft.nbt.CompoundTag)", "a");
+			this.put("net.minecraft.world.level.storage.TagValueOutput#createWithContext(net.minecraft.util.ProblemReporter,net.minecraft.core.HolderLookup$Provider)", "a");
+			this.put("net.minecraft.world.level.storage.TagValueOutput#buildResult()", "b");
+			this.put("net.minecraft.world.item.ItemStack#CODEC", "b");
+			this.put("net.minecraft.util.ProblemReporter#DISCARDING", "a");
+			this.put("net.minecraft.util.datafix.fixes.References#ITEM_STACK", "u");
+
+		}
+
 	};
 
 	public static Map<String, String> getMapping() {
 		switch (MinecraftVersion.getVersion()) {
+			case MC1_21_R5:
+				return MC1_21R5;
+			case MC1_21_R4:
+				return MC1_21R4;
 			case MC1_21_R3:
 				return MC1_21R3;
 			case MC1_21_R2:

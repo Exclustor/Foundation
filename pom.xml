@@ -10,7 +10,7 @@
 
     <groupId>org.mineacademy</groupId>
     <artifactId>Foundation</artifactId>
-    <version>6.9.17</version>
+    <version>6.9.22</version>
     <packaging>jar</packaging>
 
     <name>Foundation</name>
@@ -87,7 +87,7 @@
         <dependency>
 		    <groupId>io.papermc.paper</groupId>
 		    <artifactId>paper-api</artifactId>
-		    <version>1.21.4-R0.1-SNAPSHOT</version>
+		    <version>1.21.7-R0.1-SNAPSHOT</version>
 		</dependency>
 
         <!-- MineAcademy guaranteed availability repos for plugins -->
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.mineacademy.plugin</groupId>
             <artifactId>MultiverseCore</artifactId>
-            <version>4.3.12</version>
+            <version>5.0.0-pre.6</version>
         </dependency>
         <dependency>
             <groupId>org.mineacademy.plugin</groupId>
