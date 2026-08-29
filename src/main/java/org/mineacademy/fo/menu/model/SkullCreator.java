@@ -264,19 +264,38 @@ public class SkullCreator {
 			Class<?> gameProfileClass = ReflectionUtil.lookupClass("com.mojang.authlib.GameProfile");
 			Class<?> propertyClass = ReflectionUtil.lookupClass("com.mojang.authlib.properties.Property");
 
-			Object fakeProfileInstance = gameProfileClass.getConstructor(UUID.class, String.class).newInstance(id, "aaaaa");
 			Object propertyInstance = propertyClass.getConstructor(String.class, String.class).newInstance("textures", b64);
 
-			Method getProperties = fakeProfileInstance.getClass().getMethod("getProperties");
-			Object propertyMap = getProperties.invoke(fakeProfileInstance);
+			Class<?> propertyMapClass = ReflectionUtil.lookupClass("com.mojang.authlib.properties.PropertyMap");
+			Class<?> multimapClass = ReflectionUtil.lookupClass("com.google.common.collect.Multimap");
 
-			Method putMethod = propertyMap.getClass().getMethod("put", Object.class, Object.class);
-			putMethod.invoke(propertyMap,"textures", propertyInstance);
+			Object fakeProfileInstance;
+			try {
+				// authlib 7.x: PropertyMap wraps ImmutableMultimap.copyOf — must populate the source multimap BEFORE constructing PropertyMap
+				Class<?> linkedHashMultimapClass = ReflectionUtil.lookupClass("com.google.common.collect.LinkedHashMultimap");
+				Object multimap = linkedHashMultimapClass.getMethod("create").invoke(null);
+				multimapClass.getMethod("put", Object.class, Object.class).invoke(multimap, "textures", propertyInstance);
+				Object propertyMap = propertyMapClass.getConstructor(multimapClass).newInstance(multimap);
+				fakeProfileInstance = gameProfileClass.getConstructor(UUID.class, String.class, propertyMapClass).newInstance(id, "aaaaa", propertyMap);
+			} catch (NoSuchMethodException ex) {
+				// Pre-1.20.5 authlib: GameProfile is a class with mutable PropertyMap accessible via getProperties()
+				fakeProfileInstance = gameProfileClass.getConstructor(UUID.class, String.class).newInstance(id, "aaaaa");
+				Method getProperties = fakeProfileInstance.getClass().getMethod("getProperties");
+				Object existingMap = getProperties.invoke(fakeProfileInstance);
+				existingMap.getClass().getMethod("put", Object.class, Object.class).invoke(existingMap, "textures", propertyInstance);
+			}
 
 			if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_21) && MinecraftVersion.getSubversion() >= 1) {
 				// For Minecraft 1.21.1 and later, create a ResolvableProfile
 				Class<?> resolvableProfileClass = ReflectionUtil.lookupClass("net.minecraft.world.item.component.ResolvableProfile");
-				Object fakeResolvableProfileInstance = resolvableProfileClass.getConstructor(gameProfileClass).newInstance(fakeProfileInstance);
+				Object fakeResolvableProfileInstance;
+				try {
+					// Paper 1.21.11+: ResolvableProfile is abstract, use createResolved factory
+					Method createResolved = resolvableProfileClass.getMethod("createResolved", gameProfileClass);
+					fakeResolvableProfileInstance = createResolved.invoke(null, fakeProfileInstance);
+				} catch (NoSuchMethodException ex) {
+					fakeResolvableProfileInstance = resolvableProfileClass.getConstructor(gameProfileClass).newInstance(fakeProfileInstance);
+				}
 
 				return fakeResolvableProfileInstance;
 			} else {

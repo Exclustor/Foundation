@@ -6,6 +6,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.Common;
+import org.mineacademy.fo.MinecraftVersion;
+import org.mineacademy.fo.MinecraftVersion.V;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import lombok.Getter;
@@ -151,9 +153,15 @@ public final class InventoryDrawer {
 	 * @return
 	 */
 	public Inventory build(InventoryHolder holder) {
+		String menuTitle = this.title;
+
+		// Legacy Minecraft limits window titles to 32 characters ("&0" prefix + 30),
+		// modern versions use chat components without a length limit
+		if (MinecraftVersion.olderThan(V.v1_14) && menuTitle.length() > 30)
+			menuTitle = menuTitle.substring(0, 30);
 
 		// Automatically append the black color in the menu, can be overriden by colors
-		final Inventory inv = Bukkit.createInventory(holder, this.size, Common.colorize("&0" + (this.title.length() > 30 ? this.title.substring(0, 30) : this.title)));
+		final Inventory inv = Bukkit.createInventory(holder, this.size, Common.colorize("&0" + menuTitle));
 
 		inv.setContents(this.content);
 

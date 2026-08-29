@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import javax.annotation.Nullable;
 
@@ -94,6 +95,20 @@ public abstract class Menu {
 	@Getter
 	@Setter
 	private static int titleAnimationDurationTicks = 20;
+
+	/**
+	 * An optional post processor run over every item a menu renders, right before it is placed
+	 * into the inventory. It applies to the initial draw as well as to {@link #restartMenu()},
+	 * and it covers items coming from {@link #getItemAt(int)} and from buttons alike, no matter
+	 * whether they were built with {@link ItemCreator} or by hand.
+	 * <p>
+	 * Set to null to disable. Plugins use this to enforce house rules on every menu item, for
+	 * example to wrap over long lore lines.
+	 */
+	@Getter
+	@Setter
+	@Nullable
+	private static UnaryOperator<ItemStack> itemPostProcessor = null;
 
 	/**
 	 * A placeholder to represent that no item should be displayed/returned
@@ -672,6 +687,22 @@ public abstract class Menu {
 	 *
 	 * @return
 	 */
+	/**
+	 * Runs the item post processor over a single item. Null safe on both sides: a null item and
+	 * a missing processor alike return the item unchanged.
+	 * <p>
+	 * Any menu that writes a rendered item straight into the open inventory, instead of going
+	 * through {@link #compileItems()}, MUST route it through here. Such a write bypasses the
+	 * processor otherwise, and the plugin's house rules then hold for the initial draw but quietly
+	 * stop holding for every item redrawn after a click.
+	 *
+	 * @param item the rendered item, may be null
+	 * @return the item after the processor ran, or the item itself
+	 */
+	protected static ItemStack postProcess(final ItemStack item) {
+		return item == null || itemPostProcessor == null ? item : itemPostProcessor.apply(item);
+	}
+
 	private Map<Integer, ItemStack> compileItems() {
 		this.registeredButtonPositions.clear();
 		final Map<Integer, ItemStack> items = new HashMap<>();
@@ -735,6 +766,9 @@ public abstract class Menu {
 			if (hasReturnButton)
 				items.put(this.getReturnButtonPosition(), this.returnButton.getItem());
 		}
+
+		// Let the plugin enforce its house rules on every rendered item
+		items.replaceAll((slot, item) -> postProcess(item));
 
 		return items;
 

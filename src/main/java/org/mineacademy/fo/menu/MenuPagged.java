@@ -549,7 +549,10 @@ public abstract class MenuPagged<T> extends Menu {
 				if (prevType == Remain.invokeOpenInventoryMethod(player, "getType")) {
 					final Inventory topInventory = Remain.getTopInventoryFromOpenInventory(player);
 
-					topInventory.setItem(slot, this.getItemAt(slot));
+					// Through postProcess, not raw: this write goes straight into the open
+					// inventory and would otherwise skip the item post processor, leaving a
+					// clicked tile rendered by different rules than the same tile on open.
+					topInventory.setItem(slot, postProcess(this.getItemAt(slot)));
 				}
 			}
 		}

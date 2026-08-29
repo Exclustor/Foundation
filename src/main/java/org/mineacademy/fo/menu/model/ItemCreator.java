@@ -1002,7 +1002,7 @@ public final class ItemCreator {
 	}
 
 	public ItemCreator clone() {
-		return ItemCreator.of(this.material)
+		final ItemCreator copy = ItemCreator.of(this.material)
 				.lore(this.lores)
 				.name(this.name)
 				.amount(this.amount)
@@ -1013,5 +1013,15 @@ public final class ItemCreator {
 				.glow(this.glow)
 				.skullOwner(this.skullOwner)
 				.skullUrl(this.skullUrl);
+
+		// The base meta has to survive the copy. Since Minecraft 1.21.9 a head texture can no longer
+		// be applied through skullUrl (GameProfile.getProperties() is gone), so callers hand in a
+		// prebuilt SkullMeta via meta(...) instead. Dropping it here silently turns every cloned
+		// head into the default skin, and menus clone their cached items on every open.
+		// Copied rather than shared because ItemMeta is mutable and the source is usually a template.
+		if (this.meta != null)
+			copy.meta(this.meta.clone());
+
+		return copy;
 	}
 }
